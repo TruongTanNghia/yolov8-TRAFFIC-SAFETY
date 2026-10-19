@@ -23,7 +23,7 @@ The event rule associates a `Non_helmet` box with a `Motorcyclist` box when its 
 
 ## Stream lifecycle
 
-Upload is stored under a random job UUID; user file paths are never opened directly. A WebSocket binds to an upload job, webcam index, or RTSP URL. OpenCV reads a frame, model inference/tracking and event checks run, and annotated JPEG plus detection metadata is sent to the browser. Stop/disconnect reaches a `finally` block that releases `VideoCapture` and the inference lock. Live sources retry at most five times with bounded backoff; concurrent streams are rejected.
+Upload is stored under a random job UUID; user file paths are never opened directly. A WebSocket binds to an upload job, browser webcam, or RTSP URL. Browser webcam frames arrive as JPEG bytes; OpenCV/FFmpeg opens RTSP over TCP. Model inference/tracking and event checks run, and annotated JPEG plus detection metadata is sent to the browser. Stop/disconnect reaches a `finally` block that releases `VideoCapture` when used and the inference lock. RTSP retries at most five times with bounded backoff; concurrent streams are rejected.
 
 The current loop is sequential and sends every processed frame. It does not yet have a separate durable worker queue, stream pause/resume, or per-camera concurrent GPU scheduler.
 
